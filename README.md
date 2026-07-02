@@ -35,11 +35,11 @@ Fine-tuning FinBERT yields a **+11.4 point gain in F1-Macro** over the best TF-I
 
 Two variants compared:
 
-**Unigrams (default):** each word treated independently. Key failure mode — negations are lost (`"not good"` → `"not"` + `"good"`, the model reads `"good"` as positive). Consequence: low recall on the negative class, which is the most costly error in a financial context — a missed negative signal can mean failing to exit a losing position in time.
+**Unigrams (default):** each word treated independently. Key failure mode — negations are lost (`"not good"` → `"not"` + `"good"`, the model reads `"good"` as positive). Consequence: low recall on the negative class, which is the most costly error in a financial context a missed negative signal can mean failing to exit a losing position in time.
 
 **Bigrams + balanced weights:** extending to `ngram_range=(1,2)` preserves two-word expressions and captures negation patterns. Adding `class_weight='balanced'` corrects for the neutral-class dominance. This combination yields **+0.21 recall on the negative class** over the unigram baseline.
 
-Despite these improvements, TF-IDF represents text as a bag of words — word order and context are discarded. `"strong growth"` and `"no strong growth"` share identical unigram representations.
+Despite these improvements, TF-IDF represents text as a bag of words so word order and context are discarded. `"strong growth"` and `"no strong growth"` share identical unigram representations.
 
 ### 2. FinBERT Fine-Tuning
 
@@ -48,8 +48,8 @@ Despite these improvements, TF-IDF represents text as a bag of words — word or
 **Preprocessing:**
 - Label column cast to `ClassLabel` (required by HuggingFace Trainer for stratified splits and metric computation)
 - Stratified 80/20 train/validation split (seed=42)
-- Tokenization with `truncation=True` — no sequences exceed 150 tokens in this dataset (BERT limit: 512), so truncation has no practical effect
-- Dynamic padding via `DataCollatorWithPadding` — sequences padded to the longest in each batch, not globally, reducing memory usage
+- Tokenization with `truncation=True` no sequences exceed 150 tokens in this dataset (BERT limit: 512), so truncation has no practical effect
+- Dynamic padding via `DataCollatorWithPadding` sequences padded to the longest in each batch, not globally, reducing memory usage
 
 **Training setup:**
 
@@ -61,11 +61,11 @@ Despite these improvements, TF-IDF represents text as a bag of words — word or
 | Learning rate | 2e-5 |
 | Eval strategy | Per epoch |
 
-**Metrics tracked:** F1-Macro and Recall-Macro — both penalise poor performance on minority classes.
+**Metrics tracked:** F1-Macro and Recall-Macro both penalise poor performance on minority classes.
 
 ### 3. Error Analysis
 
-Confusion matrix analysis reveals that the majority of FinBERT's remaining errors are positive sentences misclassified as negative (18 cases). Many of these are genuinely ambiguous — sentences reporting marginal year-on-year improvements that the annotators labelled positive but that could reasonably signal stagnation. Crucially, **recall on the negative class remains high**, meaning the model reliably catches true negative signals — the highest-stakes error category in financial applications.
+Confusion matrix analysis reveals that the majority of FinBERT's remaining errors are positive sentences misclassified as negative (18 cases). Many of these are genuinely ambiguous sentences reporting marginal year-on-year improvements that the annotators labelled positive but that could reasonably signal stagnation. Crucially, **recall on the negative class remains high**, meaning the model reliably catches true negative signals the highest-stakes error category in financial applications.
 
 ---
 
