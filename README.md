@@ -39,7 +39,7 @@ Two variants compared:
 
 **Bigrams + balanced weights:** extending to `ngram_range=(1,2)` preserves two-word expressions and captures negation patterns. Adding `class_weight='balanced'` corrects for the neutral-class dominance. This combination yields **+0.21 recall on the negative class** over the unigram baseline.
 
-Despite these improvements, TF-IDF represents text as a bag of words so word order and context are discarded. `"strong growth"` and `"no strong growth"` share identical unigram representations.
+Despite these improvements, TF-IDF represents text as a bag of words so word order and context are discarded. `
 
 ### 2. FinBERT Fine-Tuning
 
